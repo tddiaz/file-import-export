@@ -3,9 +3,10 @@ package com.github.tddiaz.fileimportexportdemo.service;
 import com.github.tddiaz.fileimportexportdemo.domain.File;
 import com.github.tddiaz.fileimportexportdemo.repository.FileRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.List;
 
 @Service
 public class FileService {
@@ -18,9 +19,20 @@ public class FileService {
         this.fileStorageService = fileStorageService;
     }
 
-    public void importFile(MultipartFile multipartFile) throws IOException {
-        fileStorageService.store(new FileData(multipartFile.getBytes(), multipartFile.getOriginalFilename(), multipartFile.getContentType()));
-        fileRepository.save(new File(multipartFile.getOriginalFilename(), multipartFile.getContentType()));
+    public void importFile(FileData fileData) {
+        fileStorageService.store(fileData);
+        fileRepository.save(new File(fileData.getName(), fileData.getContentType()));
+    }
+
+    public FileData exportFile(String fileName) throws FileNotFoundException {
+        File file = fileRepository.findByName(fileName);
+        InputStream fileInputStream = fileStorageService.getFile(fileName);
+
+        return new FileData(fileName, file.getContentType(), fileInputStream);
+    }
+
+    public List<File> findAll() {
+        return fileRepository.findAll();
     }
 
 }

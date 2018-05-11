@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="container">
-        <form class="form-horizontal" th:object="${importRequest}" th:action="@{/file/import}" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal" th:object="${importRequest}" th:action="@{/files/import}" method="post" enctype="multipart/form-data">
             <div th:if="${success}" class="alert alert-success">
                 <strong>File Successfully Imported!</strong>
             </div>
